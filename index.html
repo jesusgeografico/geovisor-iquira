@@ -117,6 +117,61 @@ table.nt tr.sel td{background:var(--accent-soft)}
 .def div b{display:block;margin-bottom:4px}
 .pie{font-size:12px;color:var(--muted);margin-top:10px}
 
+/* Botón de certificado en las fichas de predio */
+.btn-cert{display:block;width:100%;margin-top:8px;border:0;border-radius:6px;background:#1f6f4a;color:#fff;padding:7px 10px;font:600 12px Inter,sans-serif;cursor:pointer}
+.btn-cert:hover{background:#185a3c}
+
+/* Certificado de uso del suelo (siempre en papel blanco, también en tema oscuro) */
+#cert{position:fixed;inset:0;z-index:3000;background:var(--veil);display:flex;flex-direction:column}
+#cert[hidden]{display:none}
+.c-barra{display:flex;gap:8px;align-items:center;padding:10px 16px;background:var(--panel);color:var(--ink);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.c-barra span{flex:1;min-width:200px;font-size:12px;color:var(--muted)}
+.c-barra button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:7px 12px;font:600 13px Inter,sans-serif;cursor:pointer}
+.c-barra #cImprimir{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.c-hoja{flex:1;overflow:auto;padding:20px 16px}
+.c-doc{background:#fff;color:#1a1a1a;width:min(216mm,100%);margin:0 auto;padding:16mm 16mm 12mm;box-shadow:0 2px 14px rgba(0,0,0,.25);font:12px/1.45 Arial,Helvetica,sans-serif}
+.c-enc{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #1f6f4a;padding-bottom:8px;flex-wrap:wrap}
+.c-ent{margin:0;font-weight:700;font-size:13px;letter-spacing:.02em}
+.c-dep{margin:2px 0 0;color:#444;font-size:11px}
+.c-num{display:flex;flex-direction:column;align-items:flex-end;font-size:11px;color:#333;gap:2px}
+.c-num span:first-child{font-weight:700;font-family:Consolas,monospace}
+.c-doc h1{text-align:center;font-size:17px;letter-spacing:.06em;margin:16px 0 8px;color:#1f6f4a}
+.c-intro{margin:0 0 6px;text-align:justify}
+.c-doc h3{font-size:12px;text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px;color:#1f6f4a;border-bottom:1px solid #cfd8d3;padding-bottom:3px;break-after:avoid}
+.c-doc h4{margin:8px 0 4px;font-size:12px}
+.c-t{border-collapse:collapse;width:100%;margin:2px 0 4px}
+.c-t th,.c-t td{border:1px solid #c9d1cc;padding:4px 6px;text-align:left;vertical-align:top}
+.c-t th{background:#eef4f0;font-weight:600}
+.c-f th{width:36%}
+.c-r th{width:24%}
+.c-t .n{text-align:right;white-space:nowrap}
+.mono{font-family:Consolas,monospace;word-break:break-all}
+.c-t input{width:100%;border:0;border-bottom:1px dashed #9aa;padding:2px 0;font:12px Arial,sans-serif;background:transparent;color:#1a1a1a}
+.c-doc textarea{width:100%;border:1px solid #c9d1cc;border-radius:4px;padding:6px;font:12px Arial,sans-serif;resize:vertical;background:#fff;color:#1a1a1a}
+.c-mapa{margin:4px 0;break-inside:avoid}
+.c-mapa svg{width:100%;height:auto;border:1px solid #c9d1cc;display:block}
+.c-mapa figcaption{font-size:10px;color:#555;margin-top:3px}
+.c-reg{break-inside:avoid;margin-bottom:6px}
+.c-src{font-size:10px;color:#666;margin:2px 0 0}
+.c-sub{font-weight:700;margin:10px 0 2px}
+.c-vacio,.c-nota{color:#7a4b00;margin:2px 0}
+.c-legal{font-size:10px;color:#444;text-align:justify;border-top:1px solid #cfd8d3;margin-top:14px;padding-top:6px}
+.c-firma{margin:34px auto 6px;width:260px;text-align:center;break-inside:avoid}
+.c-linea{border-top:1px solid #222;margin-bottom:4px}
+.c-firma p{margin:0;font-size:11px}
+.c-pie{font-size:9px;color:#777;text-align:center;margin:10px 0 0}
+@media (max-width:600px){.c-doc{padding:18px 14px}.c-hoja{padding:10px 8px}.c-f th{width:42%}}
+@media print{
+  @page{size:letter;margin:12mm}
+  body>header,body>main,#cuadro,.c-barra,.leaflet-container{display:none!important}
+  html,body{height:auto;background:#fff}
+  #cert{position:static;background:#fff;display:block}
+  .c-hoja{overflow:visible;padding:0}
+  .c-doc{box-shadow:none;width:auto;padding:0}
+  .c-t input,.c-doc textarea{border:0}
+  .c-t input::placeholder,.c-doc textarea::placeholder{color:transparent}
+}
+
 @media (max-width:760px){
   header h1 small{display:none}
   header{gap:8px;padding:0 10px}
@@ -242,8 +297,8 @@ table.nt tr.sel td{background:var(--accent-soft)}
 <script src="datos/veredas.js?v=2"></script>
 <script src="datos/clasificacion.js?v=2"></script>
 <script src="datos/rural.js?v=2"></script>
-<script src="datos/pred_urb.js?v=2"></script>
-<script src="datos/pred_rur.js?v=2"></script>
+<script src="datos/pred_urb.js?v=3"></script>
+<script src="datos/pred_rur.js?v=3"></script>
 <script>
 (function(){
 const N=D.norma;
@@ -363,7 +418,7 @@ function popPredU(p){
     ${p.pct!=null?`<tr><td>Predominante</td><td>${esc(p.uso)} (${p.pct.toFixed(1)} % del predio)</td></tr>`:''}</table>
     ${p.mixto?'<div class="warn">Predio con usos mixtos: dos o más usos ocupan cada uno al menos el 10 % del área.</div>':''}
     ${p.uso===SIN?'<div class="warn">El predio no se cruza con las zonas de uso del EOT (puede estar fuera de la zonificación urbana).</div>':`<table class="usos"><tr><td><b>Usos del EOT en el predio</b></td><td></td><td></td></tr>${filas}</table>`}
-    ${reg}</div>`;
+    ${reg}<button class="btn-cert" data-cert="urbano">Generar certificado de uso del suelo</button></div>`;
 }
 P.capa=L.geoJSON(D.pred_urb,{
   style:f=>({color:f.properties.mixto?'#111':'#555',weight:f.properties.mixto?1.6:.6,dashArray:f.properties.mixto?'3 2':null,fillColor:colPred(f.properties.uso),fillOpacity:.85}),
@@ -450,7 +505,9 @@ function popPredR(p){
   return `<div class="pop"><b class="t">Predio rural</b><table class="d">
     <tr><td>Código</td><td><code>${esc(p.codigo)}</code></td></tr>${p.cod_ant?`<tr><td>Cód. anterior</td><td><code>${esc(p.cod_ant)}</code></td></tr>`:''}
     <tr><td>Vereda (EOT)</td><td>${esc(p.vereda||'—')}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha</td></tr></table>
-    ${p.fuera?'<div class="warn">El predio está por fuera del límite municipal del EOT.</div>':''}</div>`;
+    ${p.fuera?'<div class="warn">El predio está por fuera del límite municipal del EOT.</div>':''}
+    ${(p.zonas||[]).length?`<table class="usos"><tr><td><b>Zonas de uso del EOT</b></td><td></td><td></td></tr>${p.zonas.map(([u,ha,pc])=>`<tr><td><span class="sw2" style="background:${COL_R[u]||'#ccc'}"></span>${esc(u)}</td><td class="n">${fmt(ha)} ha</td><td class="n">${pc.toFixed(1)} %</td></tr>`).join('')}</table>`:''}
+    <button class="btn-cert" data-cert="rural">Generar certificado de uso del suelo</button></div>`;
 }
 R.pred=L.geoJSON(D.pred_rur,{
   style:{color:'#3a2f8f',weight:1,fillColor:'#3a2f8f',fillOpacity:.04},
@@ -556,16 +613,26 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!cuadro.hidden)cerr
 document.getElementById('tabs').onclick=e=>{const b=e.target.closest('button');if(b)abrirCuadro(b.dataset.t);};
 // "Ver cuadro" desde una ficha: abre la pestaña y resalta la fila del uso
 map.on('popupopen',ev=>{
-  const a=ev.popup.getElement().querySelector('[data-cuadro]');if(!a)return;
-  const t=ev.popup.getElement().querySelector('b.t').textContent;
-  a.onclick=()=>{const p=ev.popup._source&&ev.popup._source.feature&&ev.popup._source.feature.properties;
-    const sel=p&&p.uso?(N.especiales[p.uso]&&N.especiales[p.uso].comoUso)||p.uso:t;abrirCuadro(a.dataset.cuadro,sel);};
+  const el=ev.popup.getElement(), src=ev.popup._source, feat=src&&src.feature;
+  const a=el.querySelector('[data-cuadro]');
+  if(a){
+    const t=el.querySelector('b.t').textContent;
+    a.onclick=()=>{const p=feat&&feat.properties;
+      const sel=p&&p.uso?(N.especiales[p.uso]&&N.especiales[p.uso].comoUso)||p.uso:t;abrirCuadro(a.dataset.cuadro,sel);};
+  }
+  // Botón "Generar certificado" en las fichas de predio
+  const bc=el.querySelector('[data-cert]');
+  if(bc&&feat) bc.onclick=()=>{map.closePopup();window.Certificado.abrir(bc.dataset.cert,feat);};
 });
+
+// Funciones que usa certificado.js
+window.GV={N,regUrbano,regRural,COL_U,COL_R,fmt,esc};
 
 filtrarUrbano();filtrarRural();filtrarMun();
 const h=location.hash.slice(1);
 setModo(['rural','municipio'].includes(h)?h:'urbano');
 })();
 </script>
+<script src="certificado.js?v=2"></script>
 </body>
 </html>
