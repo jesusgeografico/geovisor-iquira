@@ -117,6 +117,11 @@ table.nt tr.sel td{background:var(--accent-soft)}
 .def div b{display:block;margin-bottom:4px}
 .pie{font-size:12px;color:var(--muted);margin-top:10px}
 
+.cert-box{border:1px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:12px;margin-bottom:16px}
+.cert-box h2{font-size:14px;margin:0 0 4px;color:var(--accent)}
+.cert-box p{font-size:12px;color:var(--muted);margin:0 0 8px;line-height:1.4}
+.cert-box .msg{margin:6px 0 0}
+.msg-cert{font-size:11px;color:#a15c00;margin:4px 0 0}
 /* Botón de certificado en las fichas de predio */
 .btn-cert{display:block;width:100%;margin-top:8px;border:0;border-radius:6px;background:#1f6f4a;color:#fff;padding:7px 10px;font:600 12px Inter,sans-serif;cursor:pointer}
 .btn-cert:hover{background:#185a3c}
@@ -202,6 +207,12 @@ table.nt tr.sel td{background:var(--accent-soft)}
 </header>
 <main>
 <aside id="panel">
+  <div class="cert-box">
+    <h2>Certificado de uso del suelo</h2>
+    <p>Escriba el código predial (nuevo o anterior) o haga clic sobre el mapa y use el botón de la ficha.</p>
+    <div class="busca"><input type="search" id="certCod" placeholder="Código predial" autocomplete="off" aria-label="Código predial para el certificado"><button id="certBtn">Generar</button></div>
+    <p class="msg" id="certMsg"></p>
+  </div>
   <section class="mod on" id="mod-urbano">
     <h2>Usos del suelo urbano</h2>
     <p class="sub">Cabecera municipal y centros poblados</p>
@@ -348,10 +359,11 @@ function htmlReg(r,etqK){
   return h;
 }
 function popUrbano(p){
-  return `<div class="pop"><b class="t">${esc(p.uso)}</b><table class="d"><tr><td>Sector</td><td>${esc(p.sector)}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha · ${fmt(p.ha*10000)} m²</td></tr></table>${p.nota?`<div class="warn">${esc(p.nota)}</div>`:''}${htmlReg(regUrbano(p),'Condicionado')}</div>`;
+  return `<div class="pop"><b class="t">${esc(p.uso)}</b><table class="d"><tr><td>Sector</td><td>${esc(p.sector)}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha · ${fmt(p.ha*10000)} m²</td></tr></table>${p.nota?`<div class="warn">${esc(p.nota)}</div>`:''}${htmlReg(regUrbano(p),'Condicionado')}${BTN_PUNTO}</div>`;
 }
+const BTN_PUNTO='<button class="btn-cert" data-cert-punto>Certificado del predio en este punto</button><p class="msg-cert"></p>';
 function popRural(p){
-  return `<div class="pop"><b class="t">${esc(p.uso)}</b><table class="d"><tr><td>Símbolo</td><td>${esc(p.sim||'—')}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha</td></tr>${p.vereda?`<tr><td>Vereda</td><td>${esc(p.vereda)}</td></tr>`:''}${p.uso_gdb?`<tr><td>Nombre GDB</td><td>${esc(p.uso_gdb)}</td></tr>`:''}</table>${htmlReg(regRural(p),'Restringido')}</div>`;
+  return `<div class="pop"><b class="t">${esc(p.uso)}</b><table class="d"><tr><td>Símbolo</td><td>${esc(p.sim||'—')}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha</td></tr>${p.vereda?`<tr><td>Vereda</td><td>${esc(p.vereda)}</td></tr>`:''}${p.uso_gdb?`<tr><td>Nombre GDB</td><td>${esc(p.uso_gdb)}</td></tr>`:''}</table>${htmlReg(regRural(p),'Restringido')}${BTN_PUNTO}</div>`;
 }
 const POP={maxWidth:340,minWidth:260,autoPanPadding:[20,20]};
 
@@ -623,7 +635,42 @@ map.on('popupopen',ev=>{
   // Botón "Generar certificado" en las fichas de predio
   const bc=el.querySelector('[data-cert]');
   if(bc&&feat) bc.onclick=()=>{map.closePopup();window.Certificado.abrir(bc.dataset.cert,feat);};
+  // Botón "Certificado del predio en este punto" en las fichas de zonas
+  const bp=el.querySelector('[data-cert-punto]');
+  if(bp){
+    const ll=ev.popup.getLatLng();
+    bp.onclick=()=>{
+      const r=predioEn(ll);
+      if(r){map.closePopup();window.Certificado.abrir(r.tipo,r.f);}
+      else el.querySelector('.msg-cert').textContent='No hay un predio del catastro en este punto (puede ser una vía o espacio público).';
+    };
+  }
 });
+
+// ---------- Predio que contiene un punto ----------
+function enAnillo(x,y,r){let d=false;for(let i=0,j=r.length-1;i<r.length;j=i++){const a=r[i],b=r[j];if(((a[1]>y)!==(b[1]>y))&&(x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0]))d=!d;}return d;}
+function enGeom(x,y,g){const ps=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];return ps.some(p=>enAnillo(x,y,p[0])&&!p.slice(1).some(h=>enAnillo(x,y,h)));}
+function predioEn(ll){
+  for(const [tipo,col] of [['urbano',D.pred_urb],['rural',D.pred_rur]]){
+    const f=col.features.find(f=>enGeom(ll.lng,ll.lat,f.geometry));
+    if(f) return {tipo,f};
+  }
+  return null;
+}
+// ---------- Certificado desde el panel, por código predial ----------
+function certPorCodigo(){
+  const msg=document.getElementById('certMsg');
+  const q=document.getElementById('certCod').value.replace(/\D/g,'');
+  if(q.length<4){msg.textContent='Escriba al menos 4 dígitos del código predial.';return;}
+  const busca=col=>col.features.filter(f=>(f.properties.codigo||'').includes(q)||(f.properties.cod_ant||'').includes(q));
+  const u=busca(D.pred_urb), r=busca(D.pred_rur), n=u.length+r.length;
+  if(!n){msg.textContent='No se encontró ningún predio con ese código.';return;}
+  if(n>1){msg.textContent=`${n} predios coinciden. Escriba el código completo para elegir uno.`;return;}
+  msg.textContent='';
+  window.Certificado.abrir(u.length?'urbano':'rural',u[0]||r[0]);
+}
+document.getElementById('certBtn').onclick=certPorCodigo;
+document.getElementById('certCod').onkeydown=e=>{if(e.key==='Enter')certPorCodigo();};
 
 // Funciones que usa certificado.js
 window.GV={N,regUrbano,regRural,COL_U,COL_R,fmt,esc};
@@ -633,6 +680,6 @@ const h=location.hash.slice(1);
 setModo(['rural','municipio'].includes(h)?h:'urbano');
 })();
 </script>
-<script src="certificado.js?v=2"></script>
+<script src="certificado.js?v=3"></script>
 </body>
 </html>
