@@ -60,6 +60,18 @@ select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8p
 .capa{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;cursor:pointer}
 .total{display:flex;justify-content:space-between;padding:8px 10px;background:var(--accent-soft);border-radius:8px;font-weight:600;margin-top:8px;font-variant-numeric:tabular-nums}
 .total.sec{background:transparent;border:1px solid var(--line);font-weight:500;margin-top:6px}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink);padding:6px 8px;border-radius:6px;font:600 12px Inter,sans-serif;cursor:pointer}
+.seg button.on{background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.15);color:var(--accent)}
+.busca{display:flex;gap:6px}
+.busca input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:13px Inter,sans-serif}
+.busca button{border:1px solid var(--line);background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:0 12px;font:600 12px Inter,sans-serif;cursor:pointer}
+.msg{font-size:12px;color:var(--muted);margin:6px 0 0;min-height:1em}
+.pop .usos{width:100%;margin-top:4px;font-size:12px}
+.pop .usos td{padding:2px 6px 2px 0}
+.pop .usos td.n{text-align:right;font-variant-numeric:tabular-nums;color:#444}
+.pop .sw2{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.3)}
+.pop code{font:11px ui-monospace,Consolas,monospace;word-break:break-all}
 .nota{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.45;border-top:1px solid var(--line);padding-top:10px}
 .aviso-base{background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:5px 9px;font:11px Inter,sans-serif;max-width:260px}
 .etq{background:transparent;border:0;box-shadow:none;font:600 11px Inter,sans-serif;color:#1d2a24;text-shadow:0 0 3px #fff,0 0 3px #fff}
@@ -140,12 +152,31 @@ table.nt tr.sel td{background:var(--accent-soft)}
     <p class="sub">Cabecera municipal y centros poblados</p>
     <h3>Sector</h3>
     <select id="selSector"></select>
-    <h3>Usos <span>(clic para filtrar)</span></h3>
-    <ul class="leyenda" id="leyUrbano"></ul>
-    <div class="acciones"><button data-all="urbano">Todos</button><button data-none="urbano">Ninguno</button></div>
-    <div class="total"><span>Área del sector</span><span id="totUrbano"></span></div>
+    <h3>Ver</h3>
+    <div class="seg" id="segVista" role="radiogroup">
+      <button data-v="zonas" class="on" role="radio" aria-checked="true">Zonas de uso</button>
+      <button data-v="predios" role="radio" aria-checked="false">Uso por predio</button>
+    </div>
+    <div id="vistaZonas">
+      <h3>Usos <span>(clic para filtrar)</span></h3>
+      <ul class="leyenda" id="leyUrbano"></ul>
+      <div class="acciones"><button data-all="urbano">Todos</button><button data-none="urbano">Ninguno</button></div>
+      <div class="total"><span>Área del sector</span><span id="totUrbano"></span></div>
+    </div>
+    <div id="vistaPredios" hidden>
+      <p class="sub" style="margin:10px 0 0">Cada predio del catastro (U_Terreno) toma el uso del EOT que ocupa la mayor parte de su área. Los predios con borde punteado tienen dos o más usos que cubren cada uno al menos el 10 %.</p>
+      <h3>Buscar predio</h3>
+      <div class="busca"><input type="search" id="bPredU" placeholder="Código predial nuevo o anterior" autocomplete="off"><button id="bPredUBtn">Buscar</button></div>
+      <p class="msg" id="bPredUMsg"></p>
+      <h3>Uso predominante <span>(clic para filtrar)</span></h3>
+      <ul class="leyenda" id="leyPred"></ul>
+      <div class="acciones"><button data-all="predios">Todos</button><button data-none="predios">Ninguno</button></div>
+      <div class="total"><span>Predios del sector</span><span id="totPred"></span></div>
+      <div class="total sec"><span>Predios con usos mixtos</span><span id="totMixto"></span></div>
+    </div>
     <h3>Capas de apoyo</h3>
     <label class="capa"><input type="checkbox" id="chkVias" checked> Vías urbanas</label>
+    <label class="capa"><input type="checkbox" id="chkPredBorde"> Límite de predios sobre las zonas</label>
     <label class="capa"><input type="checkbox" id="chkEtqU"> Etiquetas de uso</label>
   </section>
   <section class="mod" id="mod-rural">
@@ -160,6 +191,12 @@ table.nt tr.sel td{background:var(--accent-soft)}
     <h3>Capas de apoyo</h3>
     <label class="capa"><input type="checkbox" id="chkVeredas" checked> Límite veredal</label>
     <label class="capa"><input type="checkbox" id="chkClasif"> Clasificación del territorio</label>
+    <label class="capa"><input type="checkbox" id="chkPredR"> Predios rurales (catastro)</label>
+    <div id="buscaPredR" hidden>
+      <h3>Buscar predio rural</h3>
+      <div class="busca"><input type="search" id="bPredR" placeholder="Código predial nuevo o anterior" autocomplete="off"><button id="bPredRBtn">Buscar</button></div>
+      <p class="msg" id="bPredRMsg"></p>
+    </div>
   </section>
   <section class="mod" id="mod-municipio">
     <h2>Todo el municipio</h2>
@@ -205,6 +242,8 @@ table.nt tr.sel td{background:var(--accent-soft)}
 <script src="datos/veredas.js?v=2"></script>
 <script src="datos/clasificacion.js?v=2"></script>
 <script src="datos/rural.js?v=2"></script>
+<script src="datos/pred_urb.js?v=2"></script>
+<script src="datos/pred_rur.js?v=2"></script>
 <script>
 (function(){
 const N=D.norma;
@@ -307,10 +346,77 @@ function filtrarUrbano(){
   document.getElementById('totUrbano').textContent=fmt(suma)+' ha';
 }
 function irSector(){const b=L.latLngBounds([]);U.todas.forEach(l=>{if(l.feature.properties.sector===U.sector)b.extend(l.getBounds())});map.fitBounds(b,{padding:[30,30]});}
-selS.onchange=()=>{U.sector=selS.value;U.ocultos.clear();filtrarUrbano();irSector();};
 document.getElementById('leyUrbano').onclick=e=>{const li=e.target.closest('li');if(!li)return;const u=li.dataset.k;U.ocultos.has(u)?U.ocultos.delete(u):U.ocultos.add(u);filtrarUrbano();};
-document.getElementById('chkVias').onchange=e=>e.target.checked?U.grupo.addLayer(U.vias):U.grupo.removeLayer(U.vias);
+document.getElementById('chkVias').onchange=e=>{e.target.checked?U.grupo.addLayer(U.vias):U.grupo.removeLayer(U.vias);if(e.target.checked)U.vias.bringToFront();};
 document.getElementById('chkEtqU').onchange=filtrarUrbano;
+
+// ---------- Predios urbanos cruzados con los usos (dimensión económica, U_Terreno) ----------
+const SIN='Sin uso asignado';
+const colPred=u=>u===SIN?'#bdbdbd':(COL_U[u]||'#ccc');
+const P={ocultos:new Set(),vista:'zonas'};
+function popPredU(p){
+  const filas=(p.usos||[]).map(([u,m2,pc])=>`<tr><td><span class="sw2" style="background:${colPred(u)}"></span>${esc(u)}</td><td class="n">${fmt(m2)} m²</td><td class="n">${pc.toFixed(1)} %</td></tr>`).join('');
+  const reg=p.uso!==SIN?htmlReg(regUrbano({uso:p.uso,sector:p.sector}),'Condicionado'):'';
+  return `<div class="pop"><b class="t">Predio urbano · ${esc(p.uso)}</b><table class="d">
+    <tr><td>Código</td><td><code>${esc(p.codigo)}</code></td></tr>${p.cod_ant?`<tr><td>Cód. anterior</td><td><code>${esc(p.cod_ant)}</code></td></tr>`:''}
+    <tr><td>Sector</td><td>${esc(p.sector)}</td></tr><tr><td>Área</td><td>${fmt(p.m2)} m²</td></tr>
+    ${p.pct!=null?`<tr><td>Predominante</td><td>${esc(p.uso)} (${p.pct.toFixed(1)} % del predio)</td></tr>`:''}</table>
+    ${p.mixto?'<div class="warn">Predio con usos mixtos: dos o más usos ocupan cada uno al menos el 10 % del área.</div>':''}
+    ${p.uso===SIN?'<div class="warn">El predio no se cruza con las zonas de uso del EOT (puede estar fuera de la zonificación urbana).</div>':`<table class="usos"><tr><td><b>Usos del EOT en el predio</b></td><td></td><td></td></tr>${filas}</table>`}
+    ${reg}</div>`;
+}
+P.capa=L.geoJSON(D.pred_urb,{
+  style:f=>({color:f.properties.mixto?'#111':'#555',weight:f.properties.mixto?1.6:.6,dashArray:f.properties.mixto?'3 2':null,fillColor:colPred(f.properties.uso),fillOpacity:.85}),
+  onEachFeature:(f,l)=>{l.bindPopup(()=>popPredU(f.properties),POP);hover(l,P.capa,2.5);}
+});
+P.todas=P.capa.getLayers();
+P.borde=L.geoJSON(D.pred_urb,{style:{color:'#222',weight:.6,fill:false,opacity:.7},interactive:false});
+function filtrarPredios(){
+  P.todas.forEach(l=>{const p=l.feature.properties,ver=p.sector===U.sector&&!P.ocultos.has(p.uso);ver?P.capa.addLayer(l):P.capa.removeLayer(l);});
+  if(map.hasLayer(U.vias))U.vias.bringToFront();
+  const n={},a={};let tn=0,ta=0,mx=0;
+  D.pred_urb.features.forEach(f=>{const p=f.properties;if(p.sector!==U.sector)return;n[p.uso]=(n[p.uso]||0)+1;a[p.uso]=(a[p.uso]||0)+p.m2;tn++;ta+=p.m2;if(p.mixto)mx++;});
+  document.getElementById('leyPred').innerHTML=tn?Object.keys(n).sort((x,y)=>(x===SIN)-(y===SIN)||n[y]-n[x]).map(u=>`<li data-k="${esc(u)}" class="${P.ocultos.has(u)?'off':''}"><span class="sw" style="background:${colPred(u)}"></span><span class="nm">${esc(u)}<div class="bar"><i style="width:${n[u]/tn*100}%;background:${colPred(u)}"></i></div></span><span class="ha">${n[u]} predios<br>${fmt(a[u]/10000)} ha</span></li>`).join(''):`<li style="cursor:default">El catastro de la GDB no tiene predios para ${esc(U.sector)}.</li>`;
+  document.getElementById('totPred').textContent=tn+' · '+fmt(ta/10000)+' ha';
+  document.getElementById('totMixto').textContent=mx;
+}
+function setVistaU(v){
+  P.vista=v;
+  document.querySelectorAll('#segVista button').forEach(b=>{const on=b.dataset.v===v;b.classList.toggle('on',on);b.setAttribute('aria-checked',on);});
+  document.getElementById('vistaZonas').hidden=v!=='zonas';
+  document.getElementById('vistaPredios').hidden=v!=='predios';
+  document.getElementById('chkPredBorde').closest('label').hidden=v!=='zonas';
+  document.getElementById('chkEtqU').closest('label').hidden=v!=='zonas';
+  map.closePopup();
+  if(v==='predios'){U.grupo.removeLayer(U.capa).removeLayer(U.etq).removeLayer(P.borde).addLayer(P.capa);filtrarPredios();}
+  else{U.grupo.removeLayer(P.capa).addLayer(U.capa).addLayer(U.etq);if(document.getElementById('chkPredBorde').checked)U.grupo.addLayer(P.borde);filtrarUrbano();}
+  if(map.hasLayer(U.vias))U.vias.bringToFront();
+}
+document.querySelectorAll('#segVista button').forEach(b=>b.onclick=()=>setVistaU(b.dataset.v));
+document.getElementById('leyPred').onclick=e=>{const li=e.target.closest('li[data-k]');if(!li)return;const u=li.dataset.k;P.ocultos.has(u)?P.ocultos.delete(u):P.ocultos.add(u);filtrarPredios();};
+document.getElementById('chkPredBorde').onchange=e=>{e.target.checked?U.grupo.addLayer(P.borde):U.grupo.removeLayer(P.borde);};
+// Buscador por código predial (nuevo de 30 dígitos o anterior de 20)
+function buscarPredio(capaTodas,valor,msgEl,alEncontrar){
+  const q=valor.replace(/\D/g,'');
+  if(q.length<4){msgEl.textContent='Escriba al menos 4 dígitos del código.';return;}
+  const hall=capaTodas.filter(l=>{const p=l.feature.properties;return (p.codigo||'').includes(q)||(p.cod_ant||'').includes(q);});
+  if(!hall.length){msgEl.textContent='No se encontró ningún predio con ese código.';return;}
+  const l=hall[0];
+  msgEl.textContent=hall.length>1?`${hall.length} coincidencias; se muestra la primera. Escriba más dígitos para precisar.`:'Predio encontrado.';
+  alEncontrar(l);
+  map.fitBounds(l.getBounds(),{maxZoom:19,padding:[40,40],animate:false});
+  setTimeout(()=>l.openPopup(),50);
+}
+function buscarU(){
+  buscarPredio(P.todas,document.getElementById('bPredU').value,document.getElementById('bPredUMsg'),l=>{
+    const s=l.feature.properties.sector;
+    if(s!==U.sector){U.sector=s;selS.value=s;}
+    P.ocultos.clear();filtrarUrbano();filtrarPredios();
+  });
+}
+document.getElementById('bPredUBtn').onclick=buscarU;
+document.getElementById('bPredU').onkeydown=e=>{if(e.key==='Enter')buscarU();};
+selS.onchange=()=>{U.sector=selS.value;U.ocultos.clear();P.ocultos.clear();filtrarUrbano();filtrarPredios();irSector();};
 
 // ---------- Módulo RURAL ----------
 const R={grupo:L.layerGroup(),ocultos:new Set(),vereda:null};
@@ -331,13 +437,38 @@ function filtrarRural(){
   document.getElementById('totRuralLbl').textContent=R.vereda?'Área en '+R.vereda:'Área total';
 }
 selV.onchange=()=>{
-  R.vereda=selV.value||null;filtrarRural();
+  R.vereda=selV.value||null;filtrarRural();if(map.hasLayer(R.pred))filtrarPredR();
   if(R.vereda){const f=R.veredas.getLayers().find(l=>l.feature.properties.nombre===R.vereda);map.fitBounds(f.getBounds(),{padding:[20,20]});}
   else map.fitBounds(R.limites);
 };
 document.getElementById('leyRural').onclick=e=>{const li=e.target.closest('li');if(!li)return;const u=li.dataset.k;R.ocultos.has(u)?R.ocultos.delete(u):R.ocultos.add(u);filtrarRural();};
 document.getElementById('chkVeredas').onchange=e=>e.target.checked?R.grupo.addLayer(R.veredas):R.grupo.removeLayer(R.veredas);
 document.getElementById('chkClasif').onchange=e=>e.target.checked?R.grupo.addLayer(R.clasif):R.grupo.removeLayer(R.clasif);
+
+// ---------- Predios rurales (dimensión económica, R_Terreno) ----------
+function popPredR(p){
+  return `<div class="pop"><b class="t">Predio rural</b><table class="d">
+    <tr><td>Código</td><td><code>${esc(p.codigo)}</code></td></tr>${p.cod_ant?`<tr><td>Cód. anterior</td><td><code>${esc(p.cod_ant)}</code></td></tr>`:''}
+    <tr><td>Vereda (EOT)</td><td>${esc(p.vereda||'—')}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha</td></tr></table>
+    ${p.fuera?'<div class="warn">El predio está por fuera del límite municipal del EOT.</div>':''}</div>`;
+}
+R.pred=L.geoJSON(D.pred_rur,{
+  style:{color:'#3a2f8f',weight:1,fillColor:'#3a2f8f',fillOpacity:.04},
+  onEachFeature:(f,l)=>{l.bindPopup(()=>popPredR(f.properties),POP);l.on('mouseover',()=>l.setStyle({weight:2.5,fillOpacity:.15})).on('mouseout',()=>R.pred.resetStyle(l));}
+});
+R.predTodas=R.pred.getLayers();
+function filtrarPredR(){R.predTodas.forEach(l=>{const v=!R.vereda||l.feature.properties.vereda===R.vereda;v?R.pred.addLayer(l):R.pred.removeLayer(l);});}
+document.getElementById('chkPredR').onchange=e=>{
+  document.getElementById('buscaPredR').hidden=!e.target.checked;
+  if(e.target.checked){filtrarPredR();R.grupo.addLayer(R.pred);}else R.grupo.removeLayer(R.pred);
+};
+function buscarR(){
+  buscarPredio(R.predTodas,document.getElementById('bPredR').value,document.getElementById('bPredRMsg'),l=>{
+    if(R.vereda&&l.feature.properties.vereda!==R.vereda){R.vereda=null;selV.value='';filtrarRural();filtrarPredR();}
+  });
+}
+document.getElementById('bPredRBtn').onclick=buscarR;
+document.getElementById('bPredR').onkeydown=e=>{if(e.key==='Enter')buscarR();};
 
 // ---------- Módulo MUNICIPIO (vista general) ----------
 // Suelo rural sin los polígonos de Suelo Urbano y Centro Poblado, que se muestran con su detalle urbano encima.
@@ -368,10 +499,11 @@ document.getElementById('chkMunClasif').onchange=e=>{e.target.checked?M.grupo.ad
 
 // Todos / Ninguno
 document.querySelectorAll('[data-all],[data-none]').forEach(b=>b.onclick=()=>{
-  const m=b.dataset.all||b.dataset.none, Mo={urbano:U,rural:R,municipio:M}[m];
+  const m=b.dataset.all||b.dataset.none, Mo={urbano:U,rural:R,municipio:M,predios:P}[m];
   Mo.ocultos.clear();
-  if(b.dataset.none) document.querySelectorAll('#mod-'+m+' .leyenda li').forEach(li=>Mo.ocultos.add(li.dataset.k));
-  ({urbano:filtrarUrbano,rural:filtrarRural,municipio:filtrarMun})[m]();
+  const sel={urbano:'#leyUrbano li',rural:'#leyRural li',municipio:'#mod-municipio .leyenda li',predios:'#leyPred li[data-k]'}[m];
+  if(b.dataset.none) document.querySelectorAll(sel).forEach(li=>Mo.ocultos.add(li.dataset.k));
+  ({urbano:filtrarUrbano,rural:filtrarRural,municipio:filtrarMun,predios:filtrarPredios})[m]();
 });
 
 // ---------- Cambio de módulo (cada uno conserva su vista) ----------
