@@ -11,26 +11,32 @@
 :root{
   --bg:#f4f6f5; --panel:#ffffff; --ink:#1d2a24; --muted:#5f6f67; --line:#dde4e0;
   --accent:#1f6f4a; --accent-ink:#ffffff; --accent-soft:#e3f1ea; --shadow:0 2px 10px rgba(0,0,0,.08);
+  --p:#1f6f4a; --c:#2f6db3; --k:#a8660a; --x:#b23b3b; --veil:rgba(10,20,15,.45);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#121815; --panel:#1b2420; --ink:#e6eeea; --muted:#9aaba2; --line:#2d3a34;
     --accent:#4fb486; --accent-ink:#0f1a15; --accent-soft:#213a2e; --shadow:0 2px 10px rgba(0,0,0,.4);
+    --p:#5cc493; --c:#7fb0ec; --k:#e0a24a; --x:#f07f7f; --veil:rgba(0,0,0,.6);
   }
 }
 :root[data-theme="dark"]{
   --bg:#121815; --panel:#1b2420; --ink:#e6eeea; --muted:#9aaba2; --line:#2d3a34;
   --accent:#4fb486; --accent-ink:#0f1a15; --accent-soft:#213a2e; --shadow:0 2px 10px rgba(0,0,0,.4);
+  --p:#5cc493; --c:#7fb0ec; --k:#e0a24a; --x:#f07f7f; --veil:rgba(0,0,0,.6);
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;font-size:14px}
 header{height:56px;display:flex;align-items:center;gap:16px;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line)}
 header h1{font-size:16px;margin:0;font-weight:700;white-space:nowrap}
 header h1 small{display:block;font-weight:500;color:var(--muted);font-size:11px}
-.modos{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px;margin-left:auto}
-.modos button{border:0;background:transparent;color:var(--ink);padding:7px 16px;border-radius:8px;font:600 13px Inter,sans-serif;cursor:pointer}
+.modos{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px;margin-left:auto;flex:none}
+.modos button{border:0;background:transparent;color:var(--ink);padding:7px 14px;border-radius:8px;font:600 13px Inter,sans-serif;cursor:pointer}
 .modos button.on{background:var(--accent);color:var(--accent-ink)}
+#btnCuadro{flex:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 12px;font:600 13px Inter,sans-serif;cursor:pointer}
+#btnCuadro:hover{background:var(--accent-soft)}
 #togglePanel{display:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 main{position:absolute;top:56px;bottom:0;left:0;right:0;display:flex}
 aside{width:340px;flex:none;background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:16px}
 #map{flex:1;background:var(--bg)}
@@ -38,39 +44,82 @@ aside{width:340px;flex:none;background:var(--panel);border-right:1px solid var(-
 h2{font-size:15px;margin:0 0 4px}
 .sub{color:var(--muted);font-size:12px;margin:0 0 14px}
 h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:18px 0 8px}
-select,input[type=search]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:13px Inter,sans-serif}
+h3 span{text-transform:none;letter-spacing:0}
+select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:13px Inter,sans-serif}
 .leyenda{list-style:none;margin:0;padding:0}
 .leyenda li{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:6px;cursor:pointer;font-size:13px}
 .leyenda li:hover{background:var(--accent-soft)}
 .leyenda li.off{opacity:.38}
 .leyenda .sw{width:16px;height:16px;border-radius:4px;flex:none;border:1px solid rgba(0,0,0,.25)}
-.leyenda .nm{flex:1;line-height:1.25}
-.leyenda .ha{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px;white-space:nowrap}
+.leyenda .nm{flex:1;line-height:1.25;min-width:0}
+.leyenda .ha{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px;white-space:nowrap;text-align:right}
 .bar{height:4px;background:var(--line);border-radius:2px;margin-top:3px;overflow:hidden}
 .bar i{display:block;height:100%}
 .acciones{display:flex;gap:6px;margin-top:6px}
-.acciones button,.chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:4px 9px;font:12px Inter,sans-serif;cursor:pointer}
+.acciones button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:4px 9px;font:12px Inter,sans-serif;cursor:pointer}
 .capa{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;cursor:pointer}
-.total{display:flex;justify-content:space-between;padding:8px 10px;background:var(--accent-soft);border-radius:8px;font-weight:600;margin-top:8px}
+.total{display:flex;justify-content:space-between;padding:8px 10px;background:var(--accent-soft);border-radius:8px;font-weight:600;margin-top:8px;font-variant-numeric:tabular-nums}
+.total.sec{background:transparent;border:1px solid var(--line);font-weight:500;margin-top:6px}
 .nota{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.45;border-top:1px solid var(--line);padding-top:10px}
-.leaflet-popup-content{font:13px Inter,sans-serif;margin:12px 14px}
-.pop b{display:block;font-size:14px;margin-bottom:4px}
-.pop table{border-collapse:collapse}
-.pop td{padding:2px 8px 2px 0;vertical-align:top}
-.pop td:first-child{color:#667}
-.pop .warn{color:#a15c00;font-size:11px;margin-top:4px}
 .aviso-base{background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:5px 9px;font:11px Inter,sans-serif;max-width:260px}
-#map{background:var(--bg)}
 .etq{background:transparent;border:0;box-shadow:none;font:600 11px Inter,sans-serif;color:#1d2a24;text-shadow:0 0 3px #fff,0 0 3px #fff}
+
+/* Fichas emergentes */
+.leaflet-popup-content{font:13px Inter,sans-serif;margin:12px 14px;color:#1d2a24}
+.pop b.t{display:block;font-size:14px;margin-bottom:4px}
+.pop table.d{border-collapse:collapse}
+.pop table.d td{padding:2px 8px 2px 0;vertical-align:top}
+.pop table.d td:first-child{color:#667}
+.pop .warn{color:#a15c00;font-size:11px;margin-top:4px}
+.reg{margin-top:8px;border-top:1px solid #e3e8e5;padding-top:6px;max-height:230px;overflow-y:auto}
+.reg div{margin:0 0 6px;line-height:1.35;font-size:12px}
+.reg div i{font-style:normal;font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;display:block}
+.reg .rp i{color:#1f6f4a}.reg .rc i{color:#2f6db3}.reg .rk i{color:#a8660a}.reg .rx i{color:#b23b3b}
+.fte{font-size:11px;color:#667;display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:4px}
+.fte a{color:#1f6f4a;font-weight:600;cursor:pointer;white-space:nowrap}
+
+/* Cuadro de usos */
+#cuadro{position:fixed;inset:0;z-index:2000;background:var(--veil);display:flex;align-items:center;justify-content:center;padding:16px}
+#cuadro[hidden]{display:none}
+.cuadro{background:var(--panel);color:var(--ink);border-radius:12px;box-shadow:var(--shadow);width:min(980px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+.cuadro header{height:auto;padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.cuadro header h2{font-size:16px;margin:0}
+.cuadro header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.cuadro header button{margin-left:auto;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer;font:600 13px Inter,sans-serif}
+.tabs{display:flex;gap:4px;padding:8px 16px 0;border-bottom:1px solid var(--line);overflow-x:auto;flex:none}
+.tabs button{border:0;background:transparent;color:var(--muted);padding:8px 10px;font:600 13px Inter,sans-serif;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
+.cuerpo{overflow:auto;padding:16px}
+.cuerpo h4{margin:16px 0 6px;font-size:14px}
+.cuerpo h4:first-child{margin-top:0}
+.cuerpo .src{font-size:11px;color:var(--muted);margin:0 0 8px}
+.tw{overflow-x:auto}
+table.nt{border-collapse:collapse;width:100%;font-size:12.5px;min-width:560px}
+table.nt th{background:var(--accent-soft);text-align:left;padding:7px 8px;border:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+table.nt th.hp{color:var(--p)}table.nt th.hc{color:var(--c)}table.nt th.hk{color:var(--k)}table.nt th.hx{color:var(--x)}
+table.nt td{padding:7px 8px;border:1px solid var(--line);vertical-align:top;line-height:1.4}
+table.nt td:first-child{font-weight:600;width:22%}
+table.nt tr.sel td{background:var(--accent-soft)}
+.def{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.def div{border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12.5px;line-height:1.45}
+.def div b{display:block;margin-bottom:4px}
+.pie{font-size:12px;color:var(--muted);margin-top:10px}
+
 @media (max-width:760px){
   header h1 small{display:none}
   header{gap:8px;padding:0 10px}
   header h1{font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis}
-  .modos button{padding:6px 10px}
+  .modos button{padding:6px 8px;font-size:12px}
+  #btnCuadro{padding:6px 8px;font-size:12px}
+  #btnCuadro .lg{display:none}
   #togglePanel{display:block}
   aside{position:absolute;z-index:1000;top:0;bottom:0;left:0;width:min(340px,88vw);box-shadow:var(--shadow);transform:translateX(-102%);transition:transform .2s}
   aside.abierto{transform:none}
+  #cuadro{padding:0}
+  .cuadro{border-radius:0;height:100%}
 }
+@media (max-width:440px){ header h1{display:none} }
+@media (prefers-reduced-motion:reduce){aside{transition:none}}
 </style>
 </head>
 <body>
@@ -80,7 +129,9 @@ select,input[type=search]{width:100%;padding:8px 10px;border:1px solid var(--lin
   <div class="modos" role="tablist">
     <button data-modo="urbano" class="on">Urbano</button>
     <button data-modo="rural">Rural</button>
+    <button data-modo="municipio">Municipio</button>
   </div>
+  <button id="btnCuadro" title="Cuadro de usos del EOT">Cuadro<span class="lg"> de usos</span></button>
 </header>
 <main>
 <aside id="panel">
@@ -89,7 +140,7 @@ select,input[type=search]{width:100%;padding:8px 10px;border:1px solid var(--lin
     <p class="sub">Cabecera municipal y centros poblados</p>
     <h3>Sector</h3>
     <select id="selSector"></select>
-    <h3>Usos <span style="text-transform:none;letter-spacing:0">(clic para filtrar)</span></h3>
+    <h3>Usos <span>(clic para filtrar)</span></h3>
     <ul class="leyenda" id="leyUrbano"></ul>
     <div class="acciones"><button data-all="urbano">Todos</button><button data-none="urbano">Ninguno</button></div>
     <div class="total"><span>Área del sector</span><span id="totUrbano"></span></div>
@@ -98,11 +149,11 @@ select,input[type=search]{width:100%;padding:8px 10px;border:1px solid var(--lin
     <label class="capa"><input type="checkbox" id="chkEtqU"> Etiquetas de uso</label>
   </section>
   <section class="mod" id="mod-rural">
-    <h2>Reglamentación del suelo rural</h2>
-    <p class="sub">Zonificación del suelo rural municipal</p>
+    <h2>Actividades de usos del suelo rural</h2>
+    <p class="sub">Reglamentación del suelo rural (numeral 3.2.2 del EOT, plano CR-01)</p>
     <h3>Buscar vereda</h3>
     <select id="selVereda"><option value="">— Todo el municipio —</option></select>
-    <h3>Zonas <span style="text-transform:none;letter-spacing:0">(clic para filtrar)</span></h3>
+    <h3>Zonas <span>(clic para filtrar)</span></h3>
     <ul class="leyenda" id="leyRural"></ul>
     <div class="acciones"><button data-all="rural">Todos</button><button data-none="rural">Ninguno</button></div>
     <div class="total"><span id="totRuralLbl">Área total</span><span id="totRural"></span></div>
@@ -110,19 +161,53 @@ select,input[type=search]{width:100%;padding:8px 10px;border:1px solid var(--lin
     <label class="capa"><input type="checkbox" id="chkVeredas" checked> Límite veredal</label>
     <label class="capa"><input type="checkbox" id="chkClasif"> Clasificación del territorio</label>
   </section>
-  <p class="nota">Fuente: GDB EOT Íquira (EOT_IQUIRA_02). Áreas calculadas en Origen Nacional (EPSG:9377). Los nombres de algunas zonas se normalizaron para la visualización; el nombre original de la GDB aparece en la ficha de cada polígono.</p>
+  <section class="mod" id="mod-municipio">
+    <h2>Todo el municipio</h2>
+    <p class="sub">Suelo rural, cabecera municipal y centros poblados en una sola vista</p>
+    <h3>Suelo rural <span>(clic para filtrar)</span></h3>
+    <ul class="leyenda" id="leyMunR"></ul>
+    <h3>Suelo urbano y centros poblados</h3>
+    <ul class="leyenda" id="leyMunU"></ul>
+    <div class="acciones"><button data-all="municipio">Todos</button><button data-none="municipio">Ninguno</button></div>
+    <div class="total"><span>Suelo rural</span><span id="totMunR"></span></div>
+    <div class="total sec"><span>Urbano y centros poblados</span><span id="totMunU"></span></div>
+    <h3>Capas de apoyo</h3>
+    <label class="capa"><input type="checkbox" id="chkMunVer" checked> Límite veredal</label>
+    <label class="capa"><input type="checkbox" id="chkMunClasif"> Clasificación del territorio</label>
+  </section>
+  <p class="nota">Fuente: GDB EOT Íquira (EOT_IQUIRA_02) y documento de Formulación del EOT. Áreas calculadas en Origen Nacional (EPSG:9377). Los nombres de algunas zonas se normalizaron para la visualización; el nombre original de la GDB aparece en la ficha de cada polígono.</p>
 </aside>
 <div id="map"></div>
 </main>
 
+<div id="cuadro" hidden role="dialog" aria-modal="true" aria-labelledby="cuadroTit">
+  <div class="cuadro">
+    <header>
+      <div><h2 id="cuadroTit">Cuadro de usos del suelo</h2><p>Transcrito del documento de Formulación del EOT de Íquira. Cada cuadro indica la tabla y la página para verificar.</p></div>
+      <button id="cerrarCuadro">Cerrar</button>
+    </header>
+    <div class="tabs" id="tabs">
+      <button data-t="urbano" class="on">Cabecera (Tabla 47)</button>
+      <button data-t="cp">Centros poblados</button>
+      <button data-t="rural">Suelo rural (3.2.2)</button>
+      <button data-t="suburbano">Suburbano</button>
+      <button data-t="tipologia">Tipología de usos</button>
+      <button data-t="definiciones">Definiciones</button>
+    </div>
+    <div class="cuerpo" id="cuerpo"></div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="datos/urbano.js"></script>
-<script src="datos/vias.js"></script>
-<script src="datos/veredas.js"></script>
-<script src="datos/clasificacion.js"></script>
-<script src="datos/rural.js"></script>
+<script src="datos/normativa.js?v=2"></script>
+<script src="datos/urbano.js?v=2"></script>
+<script src="datos/vias.js?v=2"></script>
+<script src="datos/veredas.js?v=2"></script>
+<script src="datos/clasificacion.js?v=2"></script>
+<script src="datos/rural.js?v=2"></script>
 <script>
 (function(){
+const N=D.norma;
 const COL_U={
   'Residencial':'#f5d76e','Residencial VIS y VIP':'#eba63f','Comercio':'#d9534f','Comercio Grupo 1':'#ef7f7f',
   'Comercio Grupo 2':'#c0392b','Comercio Grupo 2 Mixto':'#d7709a','Institucional':'#4a80c4',
@@ -138,6 +223,43 @@ const COL_R={
   'Corredor Suburbano Comercial':'#e53935','Centro Poblado':'#9e9e9e','Suelo Urbano':'#5f5f5f'};
 const ORDEN_SECT=['Cabecera municipal','Río Negro','Valencia de la Paz','San Luis'];
 const fmt=n=>n.toLocaleString('es-CO',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const lista=a=>Array.isArray(a)?a.join(', '):a;
+
+// ---------- Régimen de usos para las fichas ----------
+function regUrbano(p){
+  const esCP=p.sector!=='Cabecera municipal';
+  const esp=N.especiales[p.uso];
+  if(esp&&!esp.comoUso) return {texto:esp.texto,fuente:esp.fuente,tab:esCP?'cp':'urbano'};
+  const usoT=esp&&esp.comoUso?esp.comoUso:p.uso;
+  const tabla=esCP?N.cp[p.sector]:N.urbano;
+  const f=tabla&&tabla.filas[usoT];
+  if(!f) return {texto:'Este uso no tiene fila propia en la tabla de asignación de usos.',fuente:tabla?tabla.fuente:'',tab:esCP?'cp':'urbano'};
+  return {p:lista(f.p),c:lista(f.c),k:lista(f.k),x:esCP?N.cp.nota:N.urbano.prohibido,
+          fuente:(esp?esp.fuente+' · ':'')+tabla.fuente,pre:esp?esp.texto:null,tab:esCP?'cp':'urbano'};
+}
+function regRural(p){
+  const r=N.rural[p.uso];
+  if(!r) return null;
+  if(r.texto) return {texto:r.texto,fuente:r.fuente,tab:'rural'};
+  return {p:r.p,c:r.c,k:r.k,x:r.x,fuente:r.fuente,pre:r.nota||null,tab:p.uso.indexOf('Suburbano')>=0?'suburbano':'rural'};
+}
+function htmlReg(r,etqK){
+  if(!r) return '';
+  let h='<div class="reg">';
+  if(r.pre) h+=`<div>${esc(r.pre)}</div>`;
+  if(r.texto) h+=`<div>${esc(r.texto)}</div>`;
+  else h+=`<div class="rp"><i>Uso principal</i>${esc(r.p)}</div><div class="rc"><i>Complementario</i>${esc(r.c)}</div><div class="rk"><i>${etqK}</i>${esc(r.k)}</div><div class="rx"><i>Prohibido</i>${esc(r.x)}</div>`;
+  h+=`</div><div class="fte"><span>EOT: ${esc(r.fuente)}</span><a data-cuadro="${r.tab}">Ver cuadro</a></div>`;
+  return h;
+}
+function popUrbano(p){
+  return `<div class="pop"><b class="t">${esc(p.uso)}</b><table class="d"><tr><td>Sector</td><td>${esc(p.sector)}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha · ${fmt(p.ha*10000)} m²</td></tr></table>${p.nota?`<div class="warn">${esc(p.nota)}</div>`:''}${htmlReg(regUrbano(p),'Condicionado')}</div>`;
+}
+function popRural(p){
+  return `<div class="pop"><b class="t">${esc(p.uso)}</b><table class="d"><tr><td>Símbolo</td><td>${esc(p.sim||'—')}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha</td></tr>${p.vereda?`<tr><td>Vereda</td><td>${esc(p.vereda)}</td></tr>`:''}${p.uso_gdb?`<tr><td>Nombre GDB</td><td>${esc(p.uso_gdb)}</td></tr>`:''}</table>${htmlReg(regRural(p),'Restringido')}</div>`;
+}
+const POP={maxWidth:340,minWidth:260,autoPanPadding:[20,20]};
 
 // ---------- Mapa ----------
 const map=L.map('map',{zoomControl:true,preferCanvas:true});
@@ -149,99 +271,62 @@ const base={
 base['Calles (OSM)'].addTo(map);
 L.control.layers(base,null,{position:'topright'}).addTo(map);
 L.control.scale({imperial:false}).addTo(map);
-// Si el mapa base no carga (sin internet o en vista restringida), avisar una sola vez
 let fallas=0;const aviso=L.control({position:'bottomleft'});
 aviso.onAdd=()=>{const d=L.DomUtil.create('div','aviso-base');d.textContent='Mapa base no disponible en esta vista: se muestran solo las capas del EOT.';return d;};
 Object.values(base).forEach(t=>t.on('tileerror',()=>{if(++fallas===4)aviso.addTo(map);}));
 
+const estiloU=f=>({color:'#333',weight:.8,fillColor:COL_U[f.properties.uso]||'#ccc',fillOpacity:.85});
+const estiloR=f=>({color:'#444',weight:.3,fillColor:COL_R[f.properties.uso]||'#ccc',fillOpacity:.75});
+const estiloClasif=f=>({color:{'Suelo Urbano':'#c62828','Suelo de Expansión':'#ef6c00','Centro Poblado':'#6a1b9a','Suelo Suburbano':'#1565c0','Corredor Suburbano':'#00838f'}[f.properties.categoria]||'#000',weight:2.2,fillOpacity:.08});
+const popClasif=f=>`<div class="pop"><b class="t">${esc(f.properties.categoria)}${f.properties.nombre?' – '+esc(f.properties.nombre):''}</b><table class="d"><tr><td>Clasificación</td><td>${esc(f.properties.clasif)}</td></tr><tr><td>Área</td><td>${fmt(f.properties.ha)} ha</td></tr></table>${f.properties.categoria==='Suelo Suburbano'||f.properties.categoria==='Corredor Suburbano'?'<div class="fte"><span>Usos: Tablas 48 a 51 del EOT</span><a data-cuadro="suburbano">Ver cuadro</a></div>':''}</div>`;
+function hover(l,capa,w){l.on('mouseover',()=>l.setStyle({weight:w,color:'#000'})).on('mouseout',()=>capa.resetStyle(l));}
+function lineaLeyenda(u,ha,suma,col,off,key){
+  return `<li data-k="${esc(key||u)}" class="${off?'off':''}"><span class="sw" style="background:${col}"></span><span class="nm">${esc(u)}<div class="bar"><i style="width:${suma?ha/suma*100:0}%;background:${col}"></i></div></span><span class="ha">${fmt(ha)} ha<br>${suma?(ha/suma*100).toFixed(1):'0.0'} %</span></li>`;
+}
 
 // ---------- Módulo URBANO ----------
 const U={grupo:L.layerGroup(),sector:'Cabecera municipal',ocultos:new Set(),etq:L.layerGroup()};
-const sectores=ORDEN_SECT.filter(s=>D.urbano.features.some(f=>f.properties.sector===s));
 const selS=document.getElementById('selSector');
-sectores.forEach(s=>selS.add(new Option(s,s)));
-U.capa=L.geoJSON(D.urbano,{
-  style:f=>({color:'#333',weight:.8,fillColor:COL_U[f.properties.uso]||'#ccc',fillOpacity:.8}),
-  onEachFeature:(f,l)=>{
-    const p=f.properties;
-    l.bindPopup(`<div class="pop"><b>${p.uso}</b><table><tr><td>Sector</td><td>${p.sector}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha · ${fmt(p.ha*10000)} m²</td></tr></table>${p.nota?`<div class="warn">${p.nota}</div>`:''}</div>`);
-    l.on('mouseover',()=>l.setStyle({weight:2.5,color:'#000'})).on('mouseout',()=>U.capa.resetStyle(l));
-  }
-});
+ORDEN_SECT.filter(s=>D.urbano.features.some(f=>f.properties.sector===s)).forEach(s=>selS.add(new Option(s,s)));
+U.capa=L.geoJSON(D.urbano,{style:estiloU,onEachFeature:(f,l)=>{l.bindPopup(()=>popUrbano(f.properties),POP);hover(l,U.capa,2.5);}});
 U.todas=U.capa.getLayers();
 U.vias=L.geoJSON(D.vias,{style:{color:'#555',weight:1.2,opacity:.8},interactive:false});
-U.grupo.addLayer(U.capa).addLayer(U.vias);
+U.grupo.addLayer(U.capa).addLayer(U.vias).addLayer(U.etq);
 
 function filtrarUrbano(){
-  U.todas.forEach(l=>{
-    const p=l.feature.properties, ver=p.sector===U.sector && !U.ocultos.has(p.uso);
-    ver?U.capa.addLayer(l):U.capa.removeLayer(l);
-  });
+  U.todas.forEach(l=>{const p=l.feature.properties,ver=p.sector===U.sector&&!U.ocultos.has(p.uso);ver?U.capa.addLayer(l):U.capa.removeLayer(l);});
   if(map.hasLayer(U.vias))U.vias.bringToFront();
   U.etq.clearLayers();
   if(document.getElementById('chkEtqU').checked){
-    U.capa.eachLayer(l=>{ if(l.feature.properties.ha>0.15)
-      U.etq.addLayer(L.marker(l.getBounds().getCenter(),{icon:L.divIcon({className:'etq',html:l.feature.properties.uso,iconSize:null}),interactive:false}));});
+    U.capa.eachLayer(l=>{if(l.feature.properties.ha>0.15)
+      U.etq.addLayer(L.marker(l.getBounds().getCenter(),{icon:L.divIcon({className:'etq',html:esc(l.feature.properties.uso),iconSize:null}),interactive:false}));});
   }
-  leyendaUrbano();
-}
-function leyendaUrbano(){
   const tot={};let suma=0;
   D.urbano.features.forEach(f=>{const p=f.properties;if(p.sector!==U.sector)return;tot[p.uso]=(tot[p.uso]||0)+p.ha;suma+=p.ha;});
-  const usos=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]);
-  document.getElementById('leyUrbano').innerHTML=usos.map(u=>`<li data-uso="${u}" class="${U.ocultos.has(u)?'off':''}"><span class="sw" style="background:${COL_U[u]||'#ccc'}"></span><span class="nm">${u}<div class="bar"><i style="width:${tot[u]/suma*100}%;background:${COL_U[u]||'#ccc'}"></i></div></span><span class="ha">${fmt(tot[u])} ha<br>${(tot[u]/suma*100).toFixed(1)} %</span></li>`).join('');
+  document.getElementById('leyUrbano').innerHTML=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]).map(u=>lineaLeyenda(u,tot[u],suma,COL_U[u]||'#ccc',U.ocultos.has(u))).join('');
   document.getElementById('totUrbano').textContent=fmt(suma)+' ha';
 }
-function irSector(){
-  const b=L.latLngBounds([]);
-  U.todas.forEach(l=>{if(l.feature.properties.sector===U.sector)b.extend(l.getBounds())});
-  map.fitBounds(b,{padding:[30,30]});
-}
+function irSector(){const b=L.latLngBounds([]);U.todas.forEach(l=>{if(l.feature.properties.sector===U.sector)b.extend(l.getBounds())});map.fitBounds(b,{padding:[30,30]});}
 selS.onchange=()=>{U.sector=selS.value;U.ocultos.clear();filtrarUrbano();irSector();};
-document.getElementById('leyUrbano').onclick=e=>{const li=e.target.closest('li');if(!li)return;const u=li.dataset.uso;U.ocultos.has(u)?U.ocultos.delete(u):U.ocultos.add(u);filtrarUrbano();};
+document.getElementById('leyUrbano').onclick=e=>{const li=e.target.closest('li');if(!li)return;const u=li.dataset.k;U.ocultos.has(u)?U.ocultos.delete(u):U.ocultos.add(u);filtrarUrbano();};
 document.getElementById('chkVias').onchange=e=>e.target.checked?U.grupo.addLayer(U.vias):U.grupo.removeLayer(U.vias);
 document.getElementById('chkEtqU').onchange=filtrarUrbano;
-U.grupo.addLayer(U.etq);
 
 // ---------- Módulo RURAL ----------
 const R={grupo:L.layerGroup(),ocultos:new Set(),vereda:null};
-R.capa=L.geoJSON(D.rural,{
-  
-  style:f=>({color:'#444',weight:.3,fillColor:COL_R[f.properties.uso]||'#ccc',fillOpacity:.75}),
-  onEachFeature:(f,l)=>{
-    const p=f.properties;
-    l._ver=p.vereda||null;
-    l.bindPopup(`<div class="pop"><b>${p.uso}</b><table><tr><td>Símbolo</td><td>${p.sim||'—'}</td></tr><tr><td>Área</td><td>${fmt(p.ha)} ha</td></tr>${p.vereda?`<tr><td>Vereda</td><td>${p.vereda}</td></tr>`:''}${p.uso_gdb?`<tr><td>Nombre GDB</td><td>${p.uso_gdb}</td></tr>`:''}</table></div>`);
-    l.on('mouseover',()=>l.setStyle({weight:2,color:'#000'})).on('mouseout',()=>R.capa.resetStyle(l));
-  }
-});
+R.capa=L.geoJSON(D.rural,{style:estiloR,onEachFeature:(f,l)=>{l._ver=f.properties.vereda||null;l.bindPopup(()=>popRural(f.properties),POP);hover(l,R.capa,2);}});
 R.veredas=L.geoJSON(D.veredas,{style:{color:'#222',weight:1.4,fill:false,dashArray:'4 3'},interactive:false});
-R.clasif=L.geoJSON(D.clasificacion,{
-  
-  filter:f=>f.properties.categoria!=='Suelo Rural',
-  style:f=>({color:{'Suelo Urbano':'#c62828','Suelo de Expansión':'#ef6c00','Centro Poblado':'#6a1b9a','Suelo Suburbano':'#1565c0','Corredor Suburbano':'#00838f'}[f.properties.categoria]||'#000',weight:2.2,fillOpacity:.08}),
-  onEachFeature:(f,l)=>l.bindPopup(`<div class="pop"><b>${f.properties.categoria}${f.properties.nombre?' – '+f.properties.nombre:''}</b><table><tr><td>Clasificación</td><td>${f.properties.clasif}</td></tr><tr><td>Área</td><td>${fmt(f.properties.ha)} ha</td></tr></table></div>`)
-});
+R.clasif=L.geoJSON(D.clasificacion,{filter:f=>f.properties.categoria!=='Suelo Rural',style:estiloClasif,onEachFeature:(f,l)=>l.bindPopup(popClasif(f),POP)});
 R.grupo.addLayer(R.capa).addLayer(R.veredas);
-
-// cada polígono rural ya viene cortado por vereda (atributo "vereda")
 R.todas=R.capa.getLayers();R.limites=R.capa.getBounds();
-
 const selV=document.getElementById('selVereda');
 D.veredas.features.map(f=>f.properties.nombre).sort((a,b)=>a.localeCompare(b,'es')).forEach(n=>selV.add(new Option(n,n)));
 
 function filtrarRural(){
-  R.todas.forEach(l=>{
-    const p=l.feature.properties, ver=!R.ocultos.has(p.uso)&&(!R.vereda||l._ver===R.vereda);
-    ver?R.capa.addLayer(l):R.capa.removeLayer(l);
-  });
-  leyendaRural();
-}
-function leyendaRural(){
+  R.todas.forEach(l=>{const p=l.feature.properties,ver=!R.ocultos.has(p.uso)&&(!R.vereda||l._ver===R.vereda);ver?R.capa.addLayer(l):R.capa.removeLayer(l);});
   const tot={};let suma=0;
   R.todas.forEach(l=>{const p=l.feature.properties;if(R.vereda&&l._ver!==R.vereda)return;tot[p.uso]=(tot[p.uso]||0)+p.ha;suma+=p.ha;});
-  const usos=Object.keys(COL_R).filter(u=>tot[u]!==undefined).sort((a,b)=>tot[b]-tot[a]);
-  document.getElementById('leyRural').innerHTML=usos.map(u=>`<li data-uso="${u}" class="${R.ocultos.has(u)?'off':''}"><span class="sw" style="background:${COL_R[u]}"></span><span class="nm">${u}<div class="bar"><i style="width:${tot[u]/suma*100}%;background:${COL_R[u]}"></i></div></span><span class="ha">${fmt(tot[u])} ha<br>${(tot[u]/suma*100).toFixed(1)} %</span></li>`).join('');
+  document.getElementById('leyRural').innerHTML=Object.keys(COL_R).filter(u=>tot[u]!==undefined).sort((a,b)=>tot[b]-tot[a]).map(u=>lineaLeyenda(u,tot[u],suma,COL_R[u],R.ocultos.has(u))).join('');
   document.getElementById('totRural').textContent=fmt(suma)+' ha';
   document.getElementById('totRuralLbl').textContent=R.vereda?'Área en '+R.vereda:'Área total';
 }
@@ -250,35 +335,104 @@ selV.onchange=()=>{
   if(R.vereda){const f=R.veredas.getLayers().find(l=>l.feature.properties.nombre===R.vereda);map.fitBounds(f.getBounds(),{padding:[20,20]});}
   else map.fitBounds(R.limites);
 };
-document.getElementById('leyRural').onclick=e=>{const li=e.target.closest('li');if(!li)return;const u=li.dataset.uso;R.ocultos.has(u)?R.ocultos.delete(u):R.ocultos.add(u);filtrarRural();};
+document.getElementById('leyRural').onclick=e=>{const li=e.target.closest('li');if(!li)return;const u=li.dataset.k;R.ocultos.has(u)?R.ocultos.delete(u):R.ocultos.add(u);filtrarRural();};
 document.getElementById('chkVeredas').onchange=e=>e.target.checked?R.grupo.addLayer(R.veredas):R.grupo.removeLayer(R.veredas);
 document.getElementById('chkClasif').onchange=e=>e.target.checked?R.grupo.addLayer(R.clasif):R.grupo.removeLayer(R.clasif);
 
+// ---------- Módulo MUNICIPIO (vista general) ----------
+// Suelo rural sin los polígonos de Suelo Urbano y Centro Poblado, que se muestran con su detalle urbano encima.
+const M={grupo:L.layerGroup(),ocultos:new Set()};
+const NO_RURAL=new Set(['Suelo Urbano','Centro Poblado']);
+M.rural=L.geoJSON(D.rural,{filter:f=>!NO_RURAL.has(f.properties.uso),style:estiloR,onEachFeature:(f,l)=>{l.bindPopup(()=>popRural(f.properties),POP);hover(l,M.rural,2);}});
+M.urb=L.geoJSON(D.urbano,{style:estiloU,onEachFeature:(f,l)=>{l.bindPopup(()=>popUrbano(f.properties),POP);hover(l,M.urb,2.5);}});
+M.ver=L.geoJSON(D.veredas,{style:{color:'#222',weight:1.2,fill:false,dashArray:'4 3'},interactive:false});
+M.clasif=L.geoJSON(D.clasificacion,{filter:f=>f.properties.categoria!=='Suelo Rural',style:estiloClasif,onEachFeature:(f,l)=>l.bindPopup(popClasif(f),POP)});
+M.grupo.addLayer(M.rural).addLayer(M.ver).addLayer(M.urb);
+M.tR=M.rural.getLayers();M.tU=M.urb.getLayers();
+M.limites=M.rural.getBounds().extend(M.urb.getBounds());
+function filtrarMun(){
+  M.tR.forEach(l=>{const v=!M.ocultos.has('r:'+l.feature.properties.uso);v?M.rural.addLayer(l):M.rural.removeLayer(l);});
+  M.tU.forEach(l=>{const v=!M.ocultos.has('u:'+l.feature.properties.uso);v?M.urb.addLayer(l):M.urb.removeLayer(l);});
+  if(map.hasLayer(M.urb))M.urb.bringToFront();
+  const tr={},tu={};let sr=0,su=0;
+  M.tR.forEach(l=>{const p=l.feature.properties;tr[p.uso]=(tr[p.uso]||0)+p.ha;sr+=p.ha;});
+  M.tU.forEach(l=>{const p=l.feature.properties;tu[p.uso]=(tu[p.uso]||0)+p.ha;su+=p.ha;});
+  document.getElementById('leyMunR').innerHTML=Object.keys(tr).sort((a,b)=>tr[b]-tr[a]).map(u=>lineaLeyenda(u,tr[u],sr,COL_R[u]||'#ccc',M.ocultos.has('r:'+u),'r:'+u)).join('');
+  document.getElementById('leyMunU').innerHTML=Object.keys(tu).sort((a,b)=>tu[b]-tu[a]).map(u=>lineaLeyenda(u,tu[u],su,COL_U[u]||'#ccc',M.ocultos.has('u:'+u),'u:'+u)).join('');
+  document.getElementById('totMunR').textContent=fmt(sr)+' ha';
+  document.getElementById('totMunU').textContent=fmt(su)+' ha';
+}
+['leyMunR','leyMunU'].forEach(id=>document.getElementById(id).onclick=e=>{const li=e.target.closest('li');if(!li)return;const k=li.dataset.k;M.ocultos.has(k)?M.ocultos.delete(k):M.ocultos.add(k);filtrarMun();});
+document.getElementById('chkMunVer').onchange=e=>e.target.checked?M.grupo.addLayer(M.ver):M.grupo.removeLayer(M.ver);
+document.getElementById('chkMunClasif').onchange=e=>{e.target.checked?M.grupo.addLayer(M.clasif):M.grupo.removeLayer(M.clasif);M.urb.bringToFront();};
+
 // Todos / Ninguno
 document.querySelectorAll('[data-all],[data-none]').forEach(b=>b.onclick=()=>{
-  const m=b.dataset.all||b.dataset.none, M=m==='urbano'?U:R;
-  M.ocultos.clear();
-  if(b.dataset.none){document.querySelectorAll('#ley'+(m==='urbano'?'Urbano':'Rural')+' li').forEach(li=>M.ocultos.add(li.dataset.uso));}
-  m==='urbano'?filtrarUrbano():filtrarRural();
+  const m=b.dataset.all||b.dataset.none, Mo={urbano:U,rural:R,municipio:M}[m];
+  Mo.ocultos.clear();
+  if(b.dataset.none) document.querySelectorAll('#mod-'+m+' .leyenda li').forEach(li=>Mo.ocultos.add(li.dataset.k));
+  ({urbano:filtrarUrbano,rural:filtrarRural,municipio:filtrarMun})[m]();
 });
 
 // ---------- Cambio de módulo (cada uno conserva su vista) ----------
+const GR={urbano:U.grupo,rural:R.grupo,municipio:M.grupo};
 let modo=null;const vista={};
 function setModo(m){
-  if(modo){vista[modo]={c:map.getCenter(),z:map.getZoom()};map.removeLayer(modo==='urbano'?U.grupo:R.grupo);}
+  if(modo){vista[modo]={c:map.getCenter(),z:map.getZoom()};map.removeLayer(GR[modo]);}
   modo=m;
   document.querySelectorAll('.modos button').forEach(b=>b.classList.toggle('on',b.dataset.modo===m));
   document.querySelectorAll('.mod').forEach(s=>s.classList.toggle('on',s.id==='mod-'+m));
   map.closePopup();
-  (m==='urbano'?U.grupo:R.grupo).addTo(map);
-  if(vista[m])map.setView(vista[m].c,vista[m].z);else m==='urbano'?irSector():map.fitBounds(R.limites);
+  GR[m].addTo(map);
+  if(m==='municipio')M.urb.bringToFront();
+  if(vista[m])map.setView(vista[m].c,vista[m].z,{animate:false});
+  else if(m==='urbano')irSector(); else map.fitBounds(m==='rural'?R.limites:M.limites);
   try{history.replaceState(null,'','#'+m)}catch(e){}
 }
 document.querySelectorAll('.modos button').forEach(b=>b.onclick=()=>setModo(b.dataset.modo));
 document.getElementById('togglePanel').onclick=()=>document.getElementById('panel').classList.toggle('abierto');
 
-filtrarUrbano();leyendaRural();
-setModo(location.hash==='#rural'?'rural':'urbano');
+// ---------- Cuadro de usos ----------
+const cuadro=document.getElementById('cuadro'),cuerpo=document.getElementById('cuerpo');
+const thead=(k)=>`<tr><th>Zona / uso</th><th class="hp">Principal</th><th class="hc">Complementario</th><th class="hk">${k}</th></tr>`;
+function tablaFilas(filas,sel){
+  return `<div class="tw"><table class="nt">${thead('Condicionado')}${Object.keys(filas).map(u=>{const f=filas[u];return `<tr class="${u===sel?'sel':''}"><td>${esc(u)}</td><td>${esc(lista(f.p))}</td><td>${esc(lista(f.c))}</td><td>${esc(lista(f.k))}</td></tr>`;}).join('')}</table></div>`;
+}
+const VISTAS={
+  urbano:sel=>`<h4>${esc(N.urbano.titulo)}</h4><p class="src">EOT: ${esc(N.urbano.fuente)} · Cabecera municipal</p>${tablaFilas(N.urbano.filas,sel)}<p class="pie">${esc(N.urbano.prohibido)}</p>
+    <h4>Otros usos del plano urbano</h4><div class="def">${Object.keys(N.especiales).map(k=>`<div><b>${esc(k)}</b>${esc(N.especiales[k].texto)}<p class="src">EOT: ${esc(N.especiales[k].fuente)}</p></div>`).join('')}</div>`,
+  cp:sel=>['Río Negro','Valencia de la Paz','San Luis'].map(c=>{const t=N.cp[c];return `<h4>${esc(t.titulo)}</h4><p class="src">EOT: ${esc(t.fuente)}</p>${tablaFilas(t.filas,sel)}<p class="pie">${esc(t.norma)}</p>`;}).join('')+`<p class="pie">${esc(N.cp.nota)}</p>`,
+  rural:sel=>`<h4>Actividades de usos del suelo rural</h4><p class="src">EOT: numeral 3.2.2, pág. 207-216 · plano CR-01</p><div class="tw"><table class="nt"><tr><th>Zona</th><th class="hp">Principal</th><th class="hc">Complementario</th><th class="hk">Restringido</th><th class="hx">Prohibido</th></tr>${Object.keys(N.rural).filter(z=>N.rural[z].p).map(z=>{const r=N.rural[z];return `<tr class="${z===sel?'sel':''}"><td>${esc(z)}<p class="src">${esc(r.fuente)}</p></td><td>${esc(r.p)}</td><td>${esc(r.c)}</td><td>${esc(r.k)}</td><td>${esc(r.x)}</td></tr>`;}).join('')}</table></div>
+    <h4>Zonas sin régimen de usos en el numeral 3.2.2</h4><div class="def">${Object.keys(N.rural).filter(z=>N.rural[z].texto).map(z=>`<div><b>${esc(z)}</b>${esc(N.rural[z].texto)}<p class="src">EOT: ${esc(N.rural[z].fuente)}</p></div>`).join('')}</div>`,
+  suburbano:()=>`<h4>Suelo suburbano y corredor vial suburbano</h4><p class="src">EOT: Tablas 48 a 51, pág. 221-232</p><div class="tw"><table class="nt">${thead('Condicionado')}${N.suburbano.map(s=>`<tr><td>${esc(s.nombre)}<p class="src">${esc(s.fuente)}</p></td><td>${esc(s.p)}</td><td>${esc(s.c)}</td><td>${esc(s.k)}</td></tr>`).join('')}</table></div><p class="pie">Los usos no contemplados como principal, complementario o condicionado se entienden prohibidos.</p>`,
+  tipologia:()=>`<h4>Tipología de usos urbanos</h4><p class="src">EOT: numeral 2.11.1, pág. 191-198</p><div class="def">${N.tipologia.map(t=>`<div><b>${esc(t.nombre)}</b>${esc(t.texto)}<p class="src">${esc(t.fuente)}</p></div>`).join('')}</div>`,
+  definiciones:()=>[['Suelo urbano y centros poblados',N.definicionesUrbano,'Condicionado o restringido'],['Suelo rural',N.definicionesRural,'Restringido']].map(([t,d,k])=>`<h4>${t}</h4><p class="src">EOT: ${esc(d.fuente)}</p><div class="def"><div><b>Principal</b>${esc(d.principal)}</div><div><b>Complementario</b>${esc(d.complementario)}</div><div><b>${k}</b>${esc(d.condicionado)}</div><div><b>Prohibido</b>${esc(d.prohibido)}</div></div>`).join('')
+};
+let ultimoFoco=null;
+function abrirCuadro(tab,sel){
+  ultimoFoco=document.activeElement;
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+  cuerpo.innerHTML=VISTAS[tab](sel);cuerpo.scrollTop=0;
+  cuadro.hidden=false;document.getElementById('cerrarCuadro').focus();
+  const f=cuerpo.querySelector('tr.sel');if(f)f.scrollIntoView({block:'center'});
+}
+function cerrarCuadro(){cuadro.hidden=true;if(ultimoFoco)ultimoFoco.focus();}
+document.getElementById('btnCuadro').onclick=()=>abrirCuadro(modo==='urbano'&&U.sector!=='Cabecera municipal'?'cp':modo==='urbano'?'urbano':'rural');
+document.getElementById('cerrarCuadro').onclick=cerrarCuadro;
+cuadro.onclick=e=>{if(e.target===cuadro)cerrarCuadro();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!cuadro.hidden)cerrarCuadro();});
+document.getElementById('tabs').onclick=e=>{const b=e.target.closest('button');if(b)abrirCuadro(b.dataset.t);};
+// "Ver cuadro" desde una ficha: abre la pestaña y resalta la fila del uso
+map.on('popupopen',ev=>{
+  const a=ev.popup.getElement().querySelector('[data-cuadro]');if(!a)return;
+  const t=ev.popup.getElement().querySelector('b.t').textContent;
+  a.onclick=()=>{const p=ev.popup._source&&ev.popup._source.feature&&ev.popup._source.feature.properties;
+    const sel=p&&p.uso?(N.especiales[p.uso]&&N.especiales[p.uso].comoUso)||p.uso:t;abrirCuadro(a.dataset.cuadro,sel);};
+});
+
+filtrarUrbano();filtrarRural();filtrarMun();
+const h=location.hash.slice(1);
+setModo(['rural','municipio'].includes(h)?h:'urbano');
 })();
 </script>
 </body>
