@@ -86,7 +86,7 @@ function abrir(tipo,feature){
 
   // Mapa de localización
   const svg=urbano
-    ? mapaSVG(feature,D.urbano.features.filter(f=>f.properties.sector===p.sector),f=>GV.COL_U[f.properties.uso]||'#ccc',D.pred_urb.features)
+    ? mapaSVG(feature,D.urbano.features.filter(f=>f.properties.sector===p.sector),f=>GV.COL_U[f.properties.uso]||'#ccc',D.construcciones?D.construcciones.features:D.pred_urb.features)
     : mapaSVG(feature,D.rural.features,f=>GV.COL_R[f.properties.uso]||'#ccc',D.pred_rur.features);
 
   // Usos
@@ -136,7 +136,7 @@ function abrir(tipo,feature){
     </table>
 
     <h3>3. Localización</h3>
-    <figure class="c-mapa">${svg}<figcaption>Predio resaltado en magenta sobre ${urbano?'las zonas de uso del suelo urbano':'la reglamentación del suelo rural'} y los predios vecinos del catastro.</figcaption></figure>
+    <figure class="c-mapa">${svg}<figcaption>Predio resaltado en magenta sobre ${urbano?'las zonas de uso del suelo urbano':'la reglamentación del suelo rural'}${urbano?' y las construcciones de la cartografía base':' y los predios vecinos del catastro'}.</figcaption></figure>
 
     <h3>4. Clasificación del suelo</h3>
     ${listaPct(p.clas,'No se identifica clasificación del suelo para este predio.')}

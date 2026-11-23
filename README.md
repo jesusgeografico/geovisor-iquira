@@ -12,7 +12,7 @@ Fuente: GDB EOT_IQUIRA_02. Las áreas se calcularon en Origen Nacional (EPSG:937
 
 ## Predios (dimensión económica)
 
-- **Urbano – Uso por predio:** cada predio del catastro (U_Terreno) se cruzó con las zonas de uso del EOT. Toma el uso que ocupa la mayor parte de su área, y la ficha muestra todos los usos presentes con m² y %. Los predios con dos o más usos de al menos 10 % se marcan como mixtos. Incluye buscador por código predial nuevo o anterior.
+- **Urbano – Uso por construcción:** cada construcción de la cartografía base (ZU_Construccion y CP_Construccion) se cruzó con las zonas de uso del EOT, porque el catastro urbano (U_Terreno) está desactualizado. Toma el uso que ocupa la mayor parte de su área, y la ficha muestra todos los usos presentes con m² y %. Las construcciones con dos o más usos de al menos 10 % se marcan como mixtas. El catastro urbano ya no se dibuja: solo se usa en el buscador por código predial (nuevo o anterior), que resalta el predio, y para el certificado.
 - **Rural:** capa de predios rurales (R_Terreno) con la vereda del EOT asignada por ubicación y buscador por código.
 
 ## Certificado de uso del suelo
